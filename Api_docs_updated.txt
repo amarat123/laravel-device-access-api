@@ -23,7 +23,7 @@ Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f
 
 
 4. Get User Devices
-http://127.0.0.1:8000/api/user/devices
+http://127.0.0.1:8000/api/user/devices 
 method : GET
 herader :-
 params : Authorization : Bearer Token

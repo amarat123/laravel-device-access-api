@@ -1,0 +1,26 @@
+{
+    "sourceFile": "app/Models/User.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1732390813049,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1732609830353,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,50 @@\n+<?php\n+\n+namespace App\\Models;\n+\n+// use Illuminate\\Contracts\\Auth\\MustVerifyEmail;\n+use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\n+use Illuminate\\Foundation\\Auth\\User as Authenticatable;\n+use Illuminate\\Notifications\\Notifiable;\n+use Laravel\\Sanctum\\HasApiTokens;\n+\n+class User extends Authenticatable\n+{\n+    use HasApiTokens, HasFactory, Notifiable;\n+\n+    /**\n+     * The attributes that are mass assignable.\n+     *\n+     * @var array<int, string>\n+     */\n+    protected $fillable = [\n+        'name',\n+        'email',\n+        'password',\n+    ];\n+\n+    /**\n+     * The attributes that should be hidden for serialization.\n+     *\n+     * @var array<int, string>\n+     */\n+    protected $hidden = [\n+        'password',\n+        'remember_token',\n+    ];\n+\n+    /**\n+     * The attributes that should be cast.\n+     *\n+     * @var array<string, string>\n+     */\n+    protected $casts = [\n+        'email_verified_at' => 'datetime',\n+    ];\n+\n+\n+    public function devices()\n+    {\n+        return $this->belongsToMany(Device::class, 'access', 'user_id', 'device_id');\n+    }\n+}\n"
+                },
+                {
+                    "date": 1732610574622,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,57 +44,7 @@\n \n \n     public function devices()\n     {\n-        return $this->belongsToMany(Device::class, 'access', 'user_id', 'device_id');\n+        return $this->belongsToMany(Device::class, 'accesses', 'user_id', 'device_id');\n     }\n }\n-<?php\n-\n-namespace App\\Models;\n-\n-// use Illuminate\\Contracts\\Auth\\MustVerifyEmail;\n-use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\n-use Illuminate\\Foundation\\Auth\\User as Authenticatable;\n-use Illuminate\\Notifications\\Notifiable;\n-use Laravel\\Sanctum\\HasApiTokens;\n-\n-class User extends Authenticatable\n-{\n-    use HasApiTokens, HasFactory, Notifiable;\n-\n-    /**\n-     * The attributes that are mass assignable.\n-     *\n-     * @var array<int, string>\n-     */\n-    protected $fillable = [\n-        'name',\n-        'email',\n-        'password',\n-    ];\n-\n-    /**\n-     * The attributes that should be hidden for serialization.\n-     *\n-     * @var array<int, string>\n-     */\n-    protected $hidden = [\n-        'password',\n-        'remember_token',\n-    ];\n-\n-    /**\n-     * The attributes that should be cast.\n-     *\n-     * @var array<string, string>\n-     */\n-    protected $casts = [\n-        'email_verified_at' => 'datetime',\n-    ];\n-\n-\n-    public function devices()\n-    {\n-        return $this->belongsToMany(Device::class, 'accesses');\n-    }\n-}\n"
+                }
+            ],
+            "date": 1732390813049,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Models;\n\n// use Illuminate\\Contracts\\Auth\\MustVerifyEmail;\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Foundation\\Auth\\User as Authenticatable;\nuse Illuminate\\Notifications\\Notifiable;\nuse Laravel\\Sanctum\\HasApiTokens;\n\nclass User extends Authenticatable\n{\n    use HasApiTokens, HasFactory, Notifiable;\n\n    /**\n     * The attributes that are mass assignable.\n     *\n     * @var array<int, string>\n     */\n    protected $fillable = [\n        'name',\n        'email',\n        'password',\n    ];\n\n    /**\n     * The attributes that should be hidden for serialization.\n     *\n     * @var array<int, string>\n     */\n    protected $hidden = [\n        'password',\n        'remember_token',\n    ];\n\n    /**\n     * The attributes that should be cast.\n     *\n     * @var array<string, string>\n     */\n    protected $casts = [\n        'email_verified_at' => 'datetime',\n    ];\n\n\n    public function devices()\n    {\n        return $this->belongsToMany(Device::class, 'accesses');\n    }\n}\n"
+        }
+    ]
+}

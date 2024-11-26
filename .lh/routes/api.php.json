@@ -1,0 +1,98 @@
+{
+    "sourceFile": "routes/api.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 20,
+            "patches": [
+                {
+                    "date": 1732394412260,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1732394424339,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,4 +17,6 @@\n \n Route::middleware('auth:sanctum')->get('/user', function (Request $request) {\n     return $request->user();\n });\n+\n+Route::post('/login', [AuthController::class, 'login']);\n"
+                },
+                {
+                    "date": 1732397062341,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,4 +19,5 @@\n     return $request->user();\n });\n \n Route::post('/login', [AuthController::class, 'login']);\n+Route::post('/refresh-token', [AuthController::class, 'refreshToken']);\n"
+                },
+                {
+                    "date": 1732398256626,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,8 +2,9 @@\n \n use Illuminate\\Http\\Request;\n use Illuminate\\Support\\Facades\\Route;\n use App\\Http\\Controllers\\AuthController;\n+use App\\Http\\Controllers\\UserController;\n \n /*\n |--------------------------------------------------------------------------\n | API Routes\n"
+                },
+                {
+                    "date": 1732398274660,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,4 +21,22 @@\n });\n \n Route::post('/login', [AuthController::class, 'login']);\n Route::post('/refresh-token', [AuthController::class, 'refreshToken']);\n+\n+\n+Route::middleware('auth:sanctum')->group(function () {\n+    // Create a new user\n+    Route::post('/users', [UserController::class, 'store']);\n+\n+    // Get all users\n+    Route::get('/users', [UserController::class, 'index']);\n+\n+    // Get a single user by ID\n+    Route::get('/users/{id}', [UserController::class, 'show']);\n+\n+    // Update a user\n+    Route::put('/users/{id}', [UserController::class, 'update']);\n+\n+    // Delete a user\n+    Route::delete('/users/{id}', [UserController::class, 'destroy']);\n+});\n"
+                },
+                {
+                    "date": 1732399089559,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,9 +25,9 @@\n \n \n Route::middleware('auth:sanctum')->group(function () {\n     // Create a new user\n-    Route::post('/users', [UserController::class, 'store']);\n+    Route::post('/insert-user', [UserController::class, 'store']);\n \n     // Get all users\n     Route::get('/users', [UserController::class, 'index']);\n \n"
+                },
+                {
+                    "date": 1732400001529,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n use Illuminate\\Http\\Request;\n use Illuminate\\Support\\Facades\\Route;\n use App\\Http\\Controllers\\AuthController;\n use App\\Http\\Controllers\\UserController;\n+use App\\Http\\Controllers\\DeviceController;\n \n /*\n |--------------------------------------------------------------------------\n | API Routes\n"
+                },
+                {
+                    "date": 1732400014721,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,4 +40,9 @@\n \n     // Delete a user\n     Route::delete('/users/{id}', [UserController::class, 'destroy']);\n });\n+\n+Route::middleware('auth:sanctum')->group(function () {\n+    // Get single device info\n+    Route::get('/devices/{id}', [DeviceController::class, 'show']);\n+});\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1732609976483,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,5 +44,7 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n-});\n\\ No newline at end of file\n+});\n+\n+Route::middleware('auth:sanctum')->get('/user/devices', [DeviceController::class, 'userDevices']);\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1732610641863,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -46,5 +46,5 @@\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n });\n \n-Route::middleware('auth:sanctum')->get('/user/devices', [DeviceController::class, 'userDevices']);\n\\ No newline at end of file\n+Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n"
+                },
+                {
+                    "date": 1732611703330,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,7 +44,8 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n+    Route::get('/devices/{id}', [DeviceController::class, 'show']);\n });\n \n Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n"
+                },
+                {
+                    "date": 1732611723011,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,8 +44,8 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n-    Route::get('/devices/{id}', [DeviceController::class, 'show']);\n+    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n });\n \n-Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n+//Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n"
+                },
+                {
+                    "date": 1732612017210,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,10 +42,13 @@\n     Route::delete('/users/{id}', [UserController::class, 'destroy']);\n });\n \n Route::middleware('auth:sanctum')->group(function () {\n+\n+    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n+\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n-    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n+    \n });\n \n //Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n"
+                },
+                {
+                    "date": 1732612459877,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,10 @@\n });\n \n Route::middleware('auth:sanctum')->group(function () {\n \n-    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n+    // Get user devices \n+    Route::get('/user/devices', [DeviceController::class, 'getAccessibleDevices']);\n \n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n"
+                },
+                {
+                    "date": 1732612481116,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,9 +44,9 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n \n     // Get user devices \n-    Route::get('/user/devices', [DeviceController::class, 'getAccessibleDevices']);\n+    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n \n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n"
+                },
+                {
+                    "date": 1732612499484,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,9 +44,9 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n \n     // Get user devices \n-    Route::get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n+    Route::get('/user/devices', [DeviceController::class, 'getAccessibleDevices']);\n \n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n"
+                },
+                {
+                    "date": 1732612544567,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,9 +44,9 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n \n     // Get user devices \n-    Route::get('/user/devices', [DeviceController::class, 'getAccessibleDevices']);\n+    Route::get('/user/devices', [DeviceController::class, 'getUserAccessibleDevices']);\n \n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n"
+                },
+                {
+                    "date": 1732612565685,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,9 +44,9 @@\n \n Route::middleware('auth:sanctum')->group(function () {\n \n     // Get user devices \n-    Route::get('/user/devices', [DeviceController::class, 'getUserAccessibleDevices']);\n+    Route::get('/user/devices', [DeviceController::class, 'getUserDevices']);\n \n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n"
+                },
+                {
+                    "date": 1732612583134,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,6 +50,4 @@\n     // Get single device info\n     Route::get('/devices/{id}', [DeviceController::class, 'show']);\n     \n });\n-\n-//Route::middleware('auth:sanctum')->get('/devices/accessible', [DeviceController::class, 'getAccessibleDevices']);\n"
+                },
+                {
+                    "date": 1732613328390,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,19 +28,14 @@\n Route::middleware('auth:sanctum')->group(function () {\n     // Create a new user\n     Route::post('/insert-user', [UserController::class, 'store']);\n \n-    // Get all users\n-    Route::get('/users', [UserController::class, 'index']);\n-\n     // Get a single user by ID\n     Route::get('/users/{id}', [UserController::class, 'show']);\n \n-    // Update a user\n-    Route::put('/users/{id}', [UserController::class, 'update']);\n+    \n \n-    // Delete a user\n-    Route::delete('/users/{id}', [UserController::class, 'destroy']);\n+    \n });\n \n Route::middleware('auth:sanctum')->group(function () {\n \n"
+                },
+                {
+                    "date": 1732613348943,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,17 +25,20 @@\n Route::post('/refresh-token', [AuthController::class, 'refreshToken']);\n \n \n Route::middleware('auth:sanctum')->group(function () {\n-    // Create a new user\n-    Route::post('/insert-user', [UserController::class, 'store']);\n \n     // Get a single user by ID\n     Route::get('/users/{id}', [UserController::class, 'show']);\n \n+    // Create a new user\n+    Route::post('/insert-user', [UserController::class, 'store']);\n+\n     \n \n     \n+\n+    \n });\n \n Route::middleware('auth:sanctum')->group(function () {\n \n"
+                }
+            ],
+            "date": 1732394412260,
+            "name": "Commit-0",
+            "content": "<?php\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Route;\nuse App\\Http\\Controllers\\AuthController;\n\n/*\n|--------------------------------------------------------------------------\n| API Routes\n|--------------------------------------------------------------------------\n|\n| Here is where you can register API routes for your application. These\n| routes are loaded by the RouteServiceProvider within a group which\n| is assigned the \"api\" middleware group. Enjoy building your API!\n|\n*/\n\nRoute::middleware('auth:sanctum')->get('/user', function (Request $request) {\n    return $request->user();\n});\n"
+        }
+    ]
+}

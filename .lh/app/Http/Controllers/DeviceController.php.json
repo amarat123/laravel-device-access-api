@@ -1,0 +1,58 @@
+{
+    "sourceFile": "app/Http/Controllers/DeviceController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1732400090360,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1732400798498,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,26 +1,22 @@\n <?php\n \n namespace App\\Http\\Controllers;\n \n-use App\\Models\\Device;\n+use App\\Models\\Device; // Import the Device model\n use Illuminate\\Http\\Request;\n \n class DeviceController extends Controller\n {\n-    // Show a single device's information by its ID\n     public function show($id)\n     {\n         // Find the device by its ID\n         $device = Device::find($id);\n \n-        // Check if the device exists\n         if (!$device) {\n             return response()->json(['message' => 'Device not found.'], 404);\n         }\n \n         // Return the device info as a JSON response\n-        return response()->json([\n-            'device' => $device\n-        ]);\n+        return response()->json(['device' => $device]);\n     }\n }\n"
+                },
+                {
+                    "date": 1732609932562,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,22 +1,40 @@\n <?php\n \n namespace App\\Http\\Controllers;\n \n-use App\\Models\\Device; // Import the Device model\n+use App\\Models\\Device;\n use Illuminate\\Http\\Request;\n \n class DeviceController extends Controller\n {\n+    // Show a single device's information by its ID\n     public function show($id)\n     {\n         // Find the device by its ID\n         $device = Device::find($id);\n \n+        // Check if the device exists\n         if (!$device) {\n             return response()->json(['message' => 'Device not found.'], 404);\n         }\n \n         // Return the device info as a JSON response\n-        return response()->json(['device' => $device]);\n+        return response()->json([\n+            'device' => $device\n+        ]);\n     }\n+\n+    public function userDevices(Request $request)\n+    {\n+        // Get the currently authenticated user\n+        $user = $request->user();\n+\n+        // Fetch devices the user has access to\n+        $devices = $user->devices;\n+\n+        // Return the list of devices as a JSON response\n+        return response()->json([\n+            'devices' => $devices\n+        ]);\n+    }\n }\n"
+                },
+                {
+                    "date": 1732610225700,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,9 +24,9 @@\n         ]);\n     }\n \n     public function userDevices(Request $request)\n-    {\n+    {   die('check');\n         // Get the currently authenticated user\n         $user = $request->user();\n \n         // Fetch devices the user has access to\n"
+                },
+                {
+                    "date": 1732610625036,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,18 +23,18 @@\n             'device' => $device\n         ]);\n     }\n \n-    public function userDevices(Request $request)\n-    {   die('check');\n-        // Get the currently authenticated user\n+    public function getAccessibleDevices(Request $request)\n+    {\n+        // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n-        // Fetch devices the user has access to\n-        $devices = $user->devices;\n+        // Fetch devices that the user has access to\n+        $devices = $user->devices()->get();\n \n-        // Return the list of devices as a JSON response\n         return response()->json([\n-            'devices' => $devices\n+            'success' => true,\n+            'devices' => $devices,\n         ]);\n     }\n }\n"
+                },
+                {
+                    "date": 1732611256573,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,8 +28,12 @@\n     {\n         // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n+        if (!$user) {\n+            return response()->json(['message' => 'Unauthorized user.'], 401);\n+        }\n+\n         // Fetch devices that the user has access to\n         $devices = $user->devices()->get();\n \n         return response()->json([\n"
+                },
+                {
+                    "date": 1732611887551,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n     public function show($id)\n     {\n         // Find the device by its ID\n         $device = Device::find($id);\n-\n+        die('ss');\n         // Check if the device exists\n         if (!$device) {\n             return response()->json(['message' => 'Device not found.'], 404);\n         }\n"
+                },
+                {
+                    "date": 1732611896648,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,9 +24,9 @@\n         ]);\n     }\n \n     public function getAccessibleDevices(Request $request)\n-    {\n+    {   die('cc');\n         // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n         if (!$user) {\n"
+                },
+                {
+                    "date": 1732612046059,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n     public function show($id)\n     {\n         // Find the device by its ID\n         $device = Device::find($id);\n-        die('ss');\n+\n         // Check if the device exists\n         if (!$device) {\n             return response()->json(['message' => 'Device not found.'], 404);\n         }\n@@ -24,9 +24,9 @@\n         ]);\n     }\n \n     public function getAccessibleDevices(Request $request)\n-    {   die('cc');\n+    {\n         // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n         if (!$user) {\n"
+                },
+                {
+                    "date": 1732612548575,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,9 +23,9 @@\n             'device' => $device\n         ]);\n     }\n \n-    public function getAccessibleDevices(Request $request)\n+    public function getUserAccessibleDevices(Request $request)\n     {\n         // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n"
+                },
+                {
+                    "date": 1732612560269,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,9 +23,9 @@\n             'device' => $device\n         ]);\n     }\n \n-    public function getUserAccessibleDevices(Request $request)\n+    public function getUserDevices(Request $request)\n     {\n         // Get the authenticated user (if you're using Sanctum for authentication)\n         $user = $request->user();\n \n"
+                }
+            ],
+            "date": 1732400090360,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse App\\Models\\Device;\nuse Illuminate\\Http\\Request;\n\nclass DeviceController extends Controller\n{\n    // Show a single device's information by its ID\n    public function show($id)\n    {\n        // Find the device by its ID\n        $device = Device::find($id);\n\n        // Check if the device exists\n        if (!$device) {\n            return response()->json(['message' => 'Device not found.'], 404);\n        }\n\n        // Return the device info as a JSON response\n        return response()->json([\n            'device' => $device\n        ]);\n    }\n}\n"
+        }
+    ]
+}

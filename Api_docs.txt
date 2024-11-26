@@ -1,0 +1,43 @@
+1. Login endpoint which will take username, password and gives us back a login and refresh token.
+http://127.0.0.1:8000/api/login
+method : POST
+data : {
+    "email": "amarat@gmail.com",
+    "password": "password123"
+}
+
+
+
+2. Create endpoint to get new login token using the refresh token
+http://127.0.0.1:8000/api/refresh-token
+method : POST
+data : {
+  "refresh_token": "hEBJUvKXf9R8Vna7VDS3eG8XgYraDR3Vyd6DaGRlULtpyl8Tu0V0ykifTude"
+}
+
+
+3. Create endpoint to get user info
+http://127.0.0.1:8000/api/users
+method : GET
+herader :-
+params : Authorization : Bearer Token
+Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f
+
+
+5. Create endpoint to create a user and store a hashed password.
+http://127.0.0.1:8000/api/insert-user
+method : POST
+data : {
+  "name": "test",
+  "email": "test@gmail.com",
+  "password": "12345678",
+  "password_confirmation": "12345678"
+}
+
+
+6. Create endpoint to get single device info
+http://127.0.0.1:8000/api/devices/{{id}}
+method : GET
+herader :-
+params : Authorization : Bearer Token
+Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f

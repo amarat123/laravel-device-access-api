@@ -1,0 +1,58 @@
+{
+    "sourceFile": "app/Http/Controllers/AuthController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1732394384652,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1732396452640,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,11 +28,12 @@\n         }\n \n         // Generate tokens\n         $token = $user->createToken('auth_token')->plainTextToken;\n+        $accessToken = $user->createToken('auth_token')->plainTextToken;\n \n         return response()->json([\n-            'access_token' => $token,\n+            'access_token' => $accessToken,\n             'refresh_token' => base64_encode($token), // Optional: Use your own refresh token logic\n             'token_type' => 'Bearer',\n         ]);\n     }\n"
+                },
+                {
+                    "date": 1732396471879,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,11 +26,11 @@\n         if (!$user || !Hash::check($request->password, $user->password)) {\n             return response()->json(['message' => 'Invalid credentials'], 401);\n         }\n \n-        // Generate tokens\n-        $token = $user->createToken('auth_token')->plainTextToken;\n+        // Generate access and refresh tokens\n         $accessToken = $user->createToken('auth_token')->plainTextToken;\n+        $refreshToken = Str::random(60); // Generate a random string for refresh token\n \n         return response()->json([\n             'access_token' => $accessToken,\n             'refresh_token' => base64_encode($token), // Optional: Use your own refresh token logic\n"
+                },
+                {
+                    "date": 1732396491782,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,12 @@\n         // Generate access and refresh tokens\n         $accessToken = $user->createToken('auth_token')->plainTextToken;\n         $refreshToken = Str::random(60); // Generate a random string for refresh token\n \n+        // Save refresh token to the user\n+        $user->refresh_token = $refreshToken;\n+        $user->save();\n+\n         return response()->json([\n             'access_token' => $accessToken,\n             'refresh_token' => base64_encode($token), // Optional: Use your own refresh token logic\n             'token_type' => 'Bearer',\n"
+                },
+                {
+                    "date": 1732396502915,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,17 +28,17 @@\n         }\n \n         // Generate access and refresh tokens\n         $accessToken = $user->createToken('auth_token')->plainTextToken;\n-        $refreshToken = Str::random(60); // Generate a random string for refresh token\n+        $ = Str::random(60); // Generate a random string for refresh token\n \n         // Save refresh token to the user\n         $user->refresh_token = $refreshToken;\n-        $user->save();\n+        $user->save()refreshToken;\n \n         return response()->json([\n             'access_token' => $accessToken,\n-            'refresh_token' => base64_encode($token), // Optional: Use your own refresh token logic\n+            'refresh_token' => refreshToken, // Optional: Use your own refresh token logic\n             'token_type' => 'Bearer',\n         ]);\n     }\n }\n"
+                },
+                {
+                    "date": 1732396509641,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -36,9 +36,9 @@\n         $user->save()refreshToken;\n \n         return response()->json([\n             'access_token' => $accessToken,\n-            'refresh_token' => refreshToken, // Optional: Use your own refresh token logic\n+            'refresh_token' => $refreshToken, \n             'token_type' => 'Bearer',\n         ]);\n     }\n }\n"
+                },
+                {
+                    "date": 1732396517346,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,9 +28,9 @@\n         }\n \n         // Generate access and refresh tokens\n         $accessToken = $user->createToken('auth_token')->plainTextToken;\n-        $ = Str::random(60); // Generate a random string for refresh token\n+        $refreshToken = Str::random(60); // Generate a random string for refresh token\n \n         // Save refresh token to the user\n         $user->refresh_token = $refreshToken;\n         $user->save()refreshToken;\n"
+                },
+                {
+                    "date": 1732396534073,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -32,9 +32,9 @@\n         $refreshToken = Str::random(60); // Generate a random string for refresh token\n \n         // Save refresh token to the user\n         $user->refresh_token = $refreshToken;\n-        $user->save()refreshToken;\n+        $user->save();\n \n         return response()->json([\n             'access_token' => $accessToken,\n             'refresh_token' => $refreshToken, \n"
+                },
+                {
+                    "date": 1732397076726,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,6 +40,29 @@\n             'refresh_token' => $refreshToken, \n             'token_type' => 'Bearer',\n         ]);\n     }\n+\n+    public function refreshToken(Request $request)\n+{\n+    $request->validate([\n+        'refresh_token' => 'required',\n+    ]);\n+\n+    // Find the user with the provided refresh token\n+    $user = User::where('refresh_token', $request->refresh_token)->first();\n+\n+    if (!$user) {\n+        return response()->json(['message' => 'Invalid refresh token'], 401);\n+    }\n+\n+    // Generate a new access token\n+    $accessToken = $user->createToken('auth_token')->plainTextToken;\n+\n+    return response()->json([\n+        'access_token' => $accessToken,\n+        'token_type' => 'Bearer',\n+    ]);\n }\n \n+}\n+\n"
+                },
+                {
+                    "date": 1732397205832,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,10 @@\n \n use Illuminate\\Http\\Request;\n use Illuminate\\Support\\Facades\\Auth;\n use Illuminate\\Support\\Facades\\Hash;\n+use Illuminate\\Support\\Str;\n+\n use App\\Models\\User;\n \n class AuthController extends Controller\n {\n"
+                },
+                {
+                    "date": 1732397270130,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,8 @@\n use Illuminate\\Http\\Request;\n use Illuminate\\Support\\Facades\\Auth;\n use Illuminate\\Support\\Facades\\Hash;\n use Illuminate\\Support\\Str;\n-\n use App\\Models\\User;\n \n class AuthController extends Controller\n {\n@@ -44,27 +43,27 @@\n         ]);\n     }\n \n     public function refreshToken(Request $request)\n-{\n-    $request->validate([\n-        'refresh_token' => 'required',\n-    ]);\n+    {\n+        $request->validate([\n+            'refresh_token' => 'required',\n+        ]);\n \n-    // Find the user with the provided refresh token\n-    $user = User::where('refresh_token', $request->refresh_token)->first();\n+        // Find the user with the provided refresh token\n+        $user = User::where('refresh_token', $request->refresh_token)->first();\n \n-    if (!$user) {\n-        return response()->json(['message' => 'Invalid refresh token'], 401);\n-    }\n+        if (!$user) {\n+            return response()->json(['message' => 'Invalid refresh token'], 401);\n+        }\n \n-    // Generate a new access token\n-    $accessToken = $user->createToken('auth_token')->plainTextToken;\n+        // Generate a new access token\n+        $accessToken = $user->createToken('auth_token')->plainTextToken;\n \n-    return response()->json([\n-        'access_token' => $accessToken,\n-        'token_type' => 'Bearer',\n-    ]);\n-}\n+        return response()->json([\n+            'access_token' => $accessToken,\n+            'token_type' => 'Bearer',\n+        ]);\n+    }\n \n }\n \n"
+                }
+            ],
+            "date": 1732394384652,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nnamespace App\\Http\\Controllers;\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Auth;\nuse Illuminate\\Support\\Facades\\Hash;\nuse App\\Models\\User;\n\nclass AuthController extends Controller\n{\n    public function login(Request $request)\n    {\n        // Validate the request\n        $request->validate([\n            'email' => 'required|email',\n            'password' => 'required',\n        ]);\n\n        // Find user by email\n        $user = User::where('email', $request->email)->first();\n\n        // Check if user exists and password is correct\n        if (!$user || !Hash::check($request->password, $user->password)) {\n            return response()->json(['message' => 'Invalid credentials'], 401);\n        }\n\n        // Generate tokens\n        $token = $user->createToken('auth_token')->plainTextToken;\n\n        return response()->json([\n            'access_token' => $token,\n            'refresh_token' => base64_encode($token), // Optional: Use your own refresh token logic\n            'token_type' => 'Bearer',\n        ]);\n    }\n}\n\n"
+        }
+    ]
+}

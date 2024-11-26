@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app/Http/Controllers/UserController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1732398190044,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1732399209111,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,13 +22,16 @@\n         if ($validator->fails()) {\n             return response()->json($validator->errors(), 400);\n         }\n \n+        // Hash the password before saving the user\n+        $hashedPassword = Hash::make($request->password);\n+\n         // Create a new user and hash the password\n         $user = User::create([\n             'name' => $request->name,\n             'email' => $request->email,\n-            'password' => Hash::make($request->password),\n+            'password' => $hashedPassword,\n         ]);\n \n         return response()->json([\n             'message' => 'User created successfully.',\n"
+                }
+            ],
+            "date": 1732398190044,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse App\\Models\\User;\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Hash;\nuse Illuminate\\Support\\Facades\\Validator;\n\nclass UserController extends Controller\n{\n    // Create a new user\n    public function store(Request $request)\n    {\n        // Validate request data\n        $validator = Validator::make($request->all(), [\n            'name' => 'required|string|max:255',\n            'email' => 'required|email|unique:users,email',\n            'password' => 'required|string|min:8|confirmed',\n        ]);\n\n        if ($validator->fails()) {\n            return response()->json($validator->errors(), 400);\n        }\n\n        // Create a new user and hash the password\n        $user = User::create([\n            'name' => $request->name,\n            'email' => $request->email,\n            'password' => Hash::make($request->password),\n        ]);\n\n        return response()->json([\n            'message' => 'User created successfully.',\n            'user' => $user\n        ], 201);\n    }\n\n    // Get a list of all users\n    public function index()\n    {\n        $users = User::all();\n\n        return response()->json([\n            'users' => $users\n        ], 200);\n    }\n\n    // Get user details by ID\n    public function show($id)\n    {\n        $user = User::find($id);\n\n        if (!$user) {\n            return response()->json(['message' => 'User not found'], 404);\n        }\n\n        return response()->json([\n            'user' => $user\n        ], 200);\n    }\n\n    // Update user information\n    public function update(Request $request, $id)\n    {\n        // Validate request data\n        $validator = Validator::make($request->all(), [\n            'name' => 'sometimes|string|max:255',\n            'email' => 'sometimes|email|unique:users,email,' . $id,\n            'password' => 'sometimes|string|min:8|confirmed',\n        ]);\n\n        if ($validator->fails()) {\n            return response()->json($validator->errors(), 400);\n        }\n\n        // Find the user by ID\n        $user = User::find($id);\n\n        if (!$user) {\n            return response()->json(['message' => 'User not found'], 404);\n        }\n\n        // Update user details\n        $user->name = $request->name ?? $user->name;\n        $user->email = $request->email ?? $user->email;\n        $user->password = $request->password ? Hash::make($request->password) : $user->password;\n\n        $user->save();\n\n        return response()->json([\n            'message' => 'User updated successfully.',\n            'user' => $user\n        ], 200);\n    }\n\n    // Delete a user\n    public function destroy($id)\n    {\n        $user = User::find($id);\n\n        if (!$user) {\n            return response()->json(['message' => 'User not found'], 404);\n        }\n\n        $user->delete();\n\n        return response()->json([\n            'message' => 'User deleted successfully.'\n        ], 200);\n    }\n}\n"
+        }
+    ]
+}

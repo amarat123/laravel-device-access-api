@@ -21,9 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -34,14 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/insert-user', [UserController::class, 'store']);
 
     
-
-    
-
-    
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-
     // Get user devices 
     Route::get('/user/devices', [DeviceController::class, 'getUserDevices']);
 

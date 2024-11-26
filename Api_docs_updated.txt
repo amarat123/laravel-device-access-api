@@ -1,0 +1,48 @@
+1. Login 
+http://127.0.0.1:8000/api/login
+method : POST
+Body : {
+    "email": "amarat@gmail.com",
+    "password": "password123"
+}
+
+2. Refresh Access Token By RefreshToken
+http://127.0.0.1:8000/api/refresh-token
+method : POST
+Body : {
+  "refresh_token": "hEBJUvKXf9R8Vna7VDS3eG8XgYraDR3Vyd6DaGRlULtpyl8Tu0V0ykifTude"
+}
+
+
+3. Get User Info
+http://127.0.0.1:8000/api/users/1
+method : GET
+herader :-
+params : Authorization : Bearer Token
+Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f
+
+
+4. Get User Devices
+http://127.0.0.1:8000/api/user/devices
+method : GET
+herader :-
+params : Authorization : Bearer Token
+Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f
+
+5. Insert User.
+http://127.0.0.1:8000/api/insert-user
+method : POST
+Body : {
+  "name": "test",
+  "email": "test@gmail.com",
+  "password": "12345678",
+  "password_confirmation": "12345678"
+}
+
+
+6. Get Device Info
+http://127.0.0.1:8000/api/devices/{{id}}
+method : GET
+herader :-
+params : Authorization : Bearer Token
+Ex : 	Authorization : Bearer 15|oFydm1MlzERWSjTanmY8EZRH9CfDFxTx0RzfmeHQ432d384f

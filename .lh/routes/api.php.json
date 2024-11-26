@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 20,
+            "activePatchIndex": 21,
             "patches": [
                 {
                     "date": 1732394412260,
@@ -88,6 +88,10 @@
                 {
                     "date": 1732613348943,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,17 +25,20 @@\n Route::post('/refresh-token', [AuthController::class, 'refreshToken']);\n \n \n Route::middleware('auth:sanctum')->group(function () {\n-    // Create a new user\n-    Route::post('/insert-user', [UserController::class, 'store']);\n \n     // Get a single user by ID\n     Route::get('/users/{id}', [UserController::class, 'show']);\n \n+    // Create a new user\n+    Route::post('/insert-user', [UserController::class, 'store']);\n+\n     \n \n     \n+\n+    \n });\n \n Route::middleware('auth:sanctum')->group(function () {\n \n"
+                },
+                {
+                    "date": 1732617300908,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,12 +20,12 @@\n Route::middleware('auth:sanctum')->get('/user', function (Request $request) {\n     return $request->user();\n });\n \n+\n Route::post('/login', [AuthController::class, 'login']);\n Route::post('/refresh-token', [AuthController::class, 'refreshToken']);\n \n-\n Route::middleware('auth:sanctum')->group(function () {\n \n     // Get a single user by ID\n     Route::get('/users/{id}', [UserController::class, 'show']);\n@@ -33,16 +33,8 @@\n     // Create a new user\n     Route::post('/insert-user', [UserController::class, 'store']);\n \n     \n-\n-    \n-\n-    \n-});\n-\n-Route::middleware('auth:sanctum')->group(function () {\n-\n     // Get user devices \n     Route::get('/user/devices', [DeviceController::class, 'getUserDevices']);\n \n     // Get single device info\n"
                 }
             ],
             "date": 1732394412260,
